@@ -10,6 +10,7 @@
     <packaging>pom</packaging> <modules>
     <module>nebula-tracker</module>
     <module>nebula-common</module>
+    <module>nebula-peer</module>
 </modules>
 
     <properties>
