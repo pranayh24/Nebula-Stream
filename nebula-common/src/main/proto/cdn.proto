@@ -1,0 +1,87 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.nebula.grpc";
+
+// Tracker Service (control)
+service TrackerService {
+  // peer says "i am online"
+  rpc registerPeer(PeerRegistration) returns (RegistrationResponse);
+
+  // peer says "i am still alive" (heartbeat)
+  rpc KeepAlive (PeerId) returns (Ack);
+
+  // client asks "who has file x"
+  rpc LocateContent (ContentRequest) returns (PeerList);
+
+  // peer says to add him to chunk list
+  rpc AnnounceChunk (ChunkAnnouncement) returns (Ack);
+}
+
+// Peer Service (worker)
+service PeerService {
+  // request file metadata
+  rpc GetManifest (ContentRequest) returns (Manifest);
+
+  // download chunks
+  rpc DownloadCHunk(stream ChunkRequest) returns (stream ChunkData);
+}
+
+message PeerRegistration {
+  string peerId = 1;
+  string ipAddress = 2;
+  string port = 3;
+}
+
+message RegistrationResponse {
+  bool success = 1;
+  string message = 2;
+  int32 refreshIntervalSeconds = 3;
+}
+
+message PeerId {
+  string id = 1;
+}
+
+message Ack {
+  bool success = 1;
+  string message = 2;
+}
+
+message ContentRequest {
+  string contentHash = 1;
+}
+
+message ChunkRequest {
+  string contentHash = 1;
+}
+
+message ChunkData {
+  int32 chunkINdex = 1;
+  bytes data = 2;
+}
+
+message PeerList {
+  repeated PeerInfo peers = 1;
+}
+
+message PeerInfo {
+  string peerId = 1;
+  string address = 2;
+  int32 port = 3;
+  float reputation = 4;
+}
+
+message ChunkAnnouncement {
+  string peerId = 1;
+  string contentHash = 2;
+  int32 chunkIndex = 3;
+}
+
+message Manifest {
+  string contentHash = 1;
+  string fileName = 2;
+  int64 totalSize = 3;
+  int32 totalChunks = 4;
+}
+
