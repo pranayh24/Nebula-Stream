@@ -2,6 +2,7 @@ package com.nebula.peer.service;
 
 import com.nebula.commons.crypto.HashUtils;
 import com.nebula.commons.file.ChunkUtils;
+import com.nebula.peer.dto.FileMetadata;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -53,12 +54,36 @@ public class FileService {
                 Path chunkPath = contentDir.resolve("chunk_" + chunkIndex);
                 Files.write(chunkPath, actualData);
 
-                System.out.println("Stored Chunk " + chunkIndex + " (");
+                System.out.println("Stored Chunk " + chunkIndex + " (" + bytesRead + " bytes)");
                 chunkIndex++;
             }
         }
 
         System.out.println("File Split Complete. Content ID: " + contentHash);
         return contentHash;
+    }
+
+    // functionality to fetch a specific chunk's data
+    public byte[] getChunk(String contentHash, int chunkIndex) throws IOException {
+        Path chunkPath = Paths.get(STORAGE_DIR, contentHash, "chunk_" + chunkIndex);
+        if (!Files.exists(chunkPath)) {
+                        throw new IOException("Chunk not found: chunk_" + chunkIndex + " in content " + contentHash);
+        }
+        return Files.readAllBytes(chunkPath);
+    }
+
+    public FileMetadata getFileMetadata(String contentHash) throws IOException {
+        Path contentDir = Paths.get(STORAGE_DIR, contentHash);
+        if (!Files.exists(contentDir)) {
+            return null;
+        }
+
+        long chunkCount = Files.list(contentDir)
+                .filter(p -> p.getFileName().toString().startsWith("chunk_"))
+                .count();
+
+        long totalSize = chunkCount * ChunkUtils.CHUNK_SIZE;
+
+        return new FileMetadata(contentHash, totalSize, (int) chunkCount);
     }
 }
