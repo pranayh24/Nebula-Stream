@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 
 @Service
-public class PeerService extends PeerServiceGrpc.PeerServiceImplBase {
+public class PeerServiceImpl extends PeerServiceGrpc.PeerServiceImplBase {
 
     private final FileService fileService;
 
-    public PeerService(FileService fileService) {
+    public PeerServiceImpl(FileService fileService) {
         this.fileService = fileService;
     }
 

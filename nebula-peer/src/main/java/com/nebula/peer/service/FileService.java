@@ -66,8 +66,10 @@ public class FileService {
     // functionality to fetch a specific chunk's data
     public byte[] getChunk(String contentHash, int chunkIndex) throws IOException {
         Path chunkPath = Paths.get(STORAGE_DIR, contentHash, "chunk_" + chunkIndex);
+
+        System.out.println("debug server: looking for file at -> " + chunkPath.toAbsolutePath());
         if (!Files.exists(chunkPath)) {
-                        throw new IOException("Chunk not found: chunk_" + chunkIndex + " in content " + contentHash);
+                        throw new IOException("Chunk not found: " + chunkPath.toAbsolutePath());
         }
         return Files.readAllBytes(chunkPath);
     }

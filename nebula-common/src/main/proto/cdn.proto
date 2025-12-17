@@ -24,7 +24,7 @@ service PeerService {
   rpc GetManifest (ContentRequest) returns (Manifest);
 
   // download chunks
-  rpc DownloadCHunk(stream ChunkRequest) returns (stream ChunkData);
+  rpc DownloadChunk(stream ChunkRequest) returns (stream ChunkData);
 }
 
 message PeerRegistration {
@@ -54,10 +54,11 @@ message ContentRequest {
 
 message ChunkRequest {
   string contentHash = 1;
+  int32 chunkIndex = 2;
 }
 
 message ChunkData {
-  int32 chunkINdex = 1;
+  int32 chunkIndex = 1;
   bytes data = 2;
 }
 
