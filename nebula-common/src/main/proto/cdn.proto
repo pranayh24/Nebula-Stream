@@ -30,7 +30,7 @@ service PeerService {
 message PeerRegistration {
   string peerId = 1;
   string ipAddress = 2;
-  string port = 3;
+  int32 port = 3;
 }
 
 message RegistrationResponse {
