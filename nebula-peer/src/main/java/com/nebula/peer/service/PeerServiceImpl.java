@@ -61,7 +61,7 @@ public class PeerServiceImpl extends PeerServiceGrpc.PeerServiceImplBase {
 
                     // send it back
                     responseObserver.onNext(response);
-                    System.out.println("Served chunk: " + request.getChunkIndex());
+                    //System.out.println("Served chunk: " + request.getChunkIndex());
 
                 } catch (IOException e) {
                     System.err.println("Error reading chunk: " + e.getMessage());
